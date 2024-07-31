@@ -2,7 +2,7 @@
 
 ## Overview
 
-In this challenge, you will apply your understanding of the K-means algorithm and Principal Component Analysis (PCA) to classify cryptocurrencies based on their price fluctuations over various timeframes. The goal is to analyze how price changes over different intervals can be used to group cryptocurrencies into clusters.
+In this challenge, I applied my knowledge of the K-means algorithm and Principal Component Analysis (PCA) to classify cryptocurrencies based on their price fluctuations over various timeframes. The goal is to analyze how price changes over different intervals can be used to group cryptocurrencies into clusters.
 
 ## Objectives
 
