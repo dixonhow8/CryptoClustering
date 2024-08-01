@@ -1,4 +1,4 @@
-# Cryptocurrency Classification Challenge
+# Module 11 Challenge (Crypto Clustering)
 
 ## Overview
 
@@ -22,22 +22,38 @@ The dataset contains cryptocurrency price data across different timeframes. Each
 
 ## Steps
 
-1. **Data Preparation**
+1. **Prepare the Data**
    - Load the cryptocurrency price data.
-   - Preprocess the data as needed for PCA and K-means.
+   - Preprocess the data, including scaling the features for PCA and K-means.
 
-2. **Principal Component Analysis (PCA)**
-   - Apply PCA to the data to reduce its dimensionality while retaining important features.
+2. **Find the Best Value for k Using the Original Scaled DataFrame**
+   - Determine the optimal number of clusters (`k`) for the K-means algorithm using the original scaled data.
+   - Utilize techniques such as the Elbow Method or Silhouette Analysis.
 
-3. **K-means Clustering**
-   - Use the K-means algorithm to classify the cryptocurrencies into clusters based on their PCA-reduced features.
+3. **Cluster Cryptocurrencies with K-Means Using the Original Scaled Data**
+   - Apply K-means clustering to the original scaled data using the optimal number of clusters.
 
-4. **Analysis**
+4. **Optimize Clusters with Principal Component Analysis (PCA)**
+   - Apply PCA to the scaled data to reduce its dimensionality while retaining important features.
+   - Visualize the variance explained by each principal component.
+
+5. **Find the Best Value for k Using the PCA Data**
+   - Determine the optimal number of clusters (`k`) for the K-means algorithm using the PCA-reduced data.
+   - Utilize technique such as the Elbow Method.
+
+6. **Cluster Cryptocurrencies with K-Means Using the PCA Data**
+   - Apply K-means clustering to the PCA-reduced data using the optimal number of clusters.
+
+7. **Determine the Weights of Each Feature on Each Principal Component**
+   - Analyze the principal components to understand the influence of each original feature on the principal components.
+
+8. **Analysis**
    - Examine the clusters to understand the classification of cryptocurrencies.
-   - Visualize the clusters using appropriate plots.
+   - Compare the clustering results from the original scaled data and the PCA-reduced data.
 
-5. **Visualization**
+9. **Visualization**
    - Create scatter plots and other visualizations to represent the clusters and understand the relationships between cryptocurrencies.
+   - Visualize the principal components and feature weights.
 
 ## Example Code
 
@@ -48,6 +64,7 @@ import numpy as np
 import pandas as pd
 from sklearn.decomposition import PCA
 from sklearn.cluster import KMeans
+from sklearn.preprocessing import StandardScaler
 import matplotlib.pyplot as plt
 import hvplot.pandas
 
@@ -55,19 +72,30 @@ import hvplot.pandas
 data = pd.read_csv('path/to/your/data.csv')
 
 # Data preprocessing
+scaler = StandardScaler()
+scaled_data = scaler.fit_transform(data)
+
+# Determine the best value for k
 # ...
+
+# Apply K-means to the original scaled data
+kmeans = KMeans(n_clusters=optimal_k, random_state=0)
+clusters = kmeans.fit_predict(scaled_data)
 
 # Apply PCA
 pca = PCA(n_components=2)
-pca_data = pca.fit_transform(data)
+pca_data = pca.fit_transform(scaled_data)
 
-# Fit K-means
-kmeans = KMeans(n_clusters=4, random_state=0)
-clusters = kmeans.fit_predict(pca_data)
+# Determine the best value for k using PCA data
+# ...
 
-# Create a DataFrame for visualization
+# Fit K-means to PCA data
+kmeans_pca = KMeans(n_clusters=optimal_k_pca, random_state=0)
+clusters_pca = kmeans_pca.fit_predict(pca_data)
+
+# Create DataFrames for visualization
 df_pca_clusters = pd.DataFrame(pca_data, columns=['PCA1', 'PCA2'])
-df_pca_clusters['cluster'] = clusters
+df_pca_clusters['cluster'] = clusters_pca
 
 # Create a scatter plot
 scatter_plot = df_pca_clusters.hvplot.scatter(
@@ -75,10 +103,14 @@ scatter_plot = df_pca_clusters.hvplot.scatter(
     y='PCA2',
     c='cluster',
     cmap='Category10',
-    title='Cryptocurrency Clusters',
+    title='Cryptocurrency Clusters (PCA Data)',
     xlabel='PCA1',
     ylabel='PCA2'
 )
 
 # Display the plot
 scatter_plot
+
+# Determine the weights of each feature on each principal component
+weights = pd.DataFrame(pca.components_, columns=data.columns, index=['PC1', 'PC2'])
+print(weights)
